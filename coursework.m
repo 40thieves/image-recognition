@@ -1,40 +1,67 @@
 clear;
 
-im = imread('010.jpg');
+im_start = imread('001.jpg');
+im_end = imread('010.jpg');
 
-figure, imshow(im)
+% figure, imshow(im)
 
 % Convert image to black and white
 filter_av = fspecial('average', 15); % Create average filter
-im_gau = imfilter(im, filter_av, 'replicate'); % Apply average filter
-im_bw_reversed = im2bw(im_gau, 0.25); % Convert to b/w
-im_bw = im_bw_reversed < max(im_bw_reversed(:)); % Reverse the b/w img, so foreground becomes background
+% Start image
+im_start_gau = imfilter(im_start, filter_av, 'replicate'); % Apply average filter
+im_start_bw_reversed = im2bw(im_start_gau, 0.25); % Convert to b/w
+im_start_bw = im_start_bw_reversed < max(im_start_bw_reversed(:)); % Reverse the b/w img, so foreground becomes background
+% End image
+im_end_gau = imfilter(im_end, filter_av, 'replicate'); % Apply average filter
+im_end_bw_reversed = im2bw(im_end_gau, 0.25); % Convert to b/w
+im_end_bw = im_end_bw_reversed < max(im_end_bw_reversed(:)); % Reverse the b/w img, so foreground becomes background
 
-% figure, imshow(im_reversed);
+% Split image into regions
+% Start image
+im_start_label = bwlabel(im_start_bw, 4); % Label regions - pass in img, and the number of connected objects returns matrix where L is an image containing the labels, and num is the number of regions
+% End image
+im_end_label = bwlabel(im_end_bw, 4);
 
-% Calculate and get longest boundary
-bounds = boundaries(im_bw); % Get boundaries
-bounds_length = cellfun('length', bounds); % Find the length of boundaries i.e. how many boundaries in bounds
-[max_bounds_length, long_bound_index] = max(bounds_length); % Find the largest cell (longest boundary) of bounds and return max value/length in max_bounds_length and it's index in long_bound_index
-long_bound = bounds{long_bound_index}; % Extract the longest boundary from bounds
+% Display regions
+% Start image
+% im_start_label_rgb = label2rgb(im_start_label); % Convert labels to RGB image
+% figure, imshow(im_start_label_rgb)
+% End image
+% im_end_label_rgb = label2rgb(im_end_label); % Convert labels to RGB image
+% figure, imshow(im_end_label_rgb)
 
-% Convert boundary b into an image of size M-by-N so that you can see it
-[img_width, img_height] = size(im_bw); % Find the size of the image to use for image of boundary
-im_bound = bound2im(long_bound, img_width, img_height, min(long_bound(:, 1)), min(long_bound(:, 2))); % Convert bounds to img
+% Calculate ConvexArea and Area properties of the regions
+% Start image
+start_stats = regionprops(im_start_label, 'ConvexArea', 'Area'); % Returns a set of properties (defined by the arguments passed in)
+% End image
+end_stats = regionprops(im_end_label, 'ConvexArea', 'Area'); % Returns a set of properties (defined by the arguments passed in)
 
-figure, imshow(im_bound);
+% Calculate the max ConvexArea value (i.e. the size - using the ConvexArea 
+% property - of the largest region)
+% Start image
+start_area_wrap = [start_stats.ConvexArea];
+start_max_area = max(start_area_wrap);
+% End image
+end_area_wrap = [end_stats.ConvexArea];
+end_max_area = max(end_area_wrap);
 
-% Down-sample the number of points in the boundary
-[samp, normal_samp] = bsubsamp(long_bound, 50);
-im_bound_samp = bound2im(samp, img_width, img_height, min(samp(:, 1)), min(samp(:, 2))); % Convert down-sampled boundary into image
-% figure, imshow(im_bound_samp)
+% Convert pixel areas to meters
+% Start image
+start_max_area_meters = start_max_area / 101.6;
+% End image
+end_max_area_meters = end_max_area / 101.6;
 
-% Connect down-sampled boundary
-connected_bound = connectpoly(samp(:, 1), samp(:, 2));
-im_bound_connected_samp = bound2im(connected_bound, img_width, img_height, min(connected_bound(:, 1)), min(connected_bound(:, 2))); % Convert connected, down-sampled boundary to image
-% figure, imshow(im_bound_connected_samp)
+% Display output
+% Start image
+disp('Start image Max area in meters: ') % Display output for convex area
+disp(start_max_area_meters)
+% End image
+disp('End image Max area in meters: ') % Display output for convex area
+disp(end_max_area_meters)
 
-chain_code = fchcode(normal_samp);
-[chain_code_height, chain_code_length] = size(chain_code.diffmm);
 
-chain_code_length
+
+
+
+
+
