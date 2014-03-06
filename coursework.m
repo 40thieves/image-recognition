@@ -17,8 +17,9 @@ im_end_bw_reversed = im2bw(im_end_gau, 0.25); % Convert to b/w
 im_end_bw = im_end_bw_reversed < max(im_end_bw_reversed(:)); % Reverse the b/w img, so foreground becomes background
 
 % Calculate img dimensions
-[start_img_width, start_img_height] = size(im_start_bw);
-[end_img_width, end_img_height] = size(im_end_bw);
+[img_width, img_height] = size(im_start_bw);
+img_center_width = img_width / 2;
+img_center_height = img_height / 2;
 
 % Split image into regions
 im_start_label = bwlabel(im_start_bw, 4); % Label regions - pass in img, and the number of connected objects returns matrix where L is an image containing the labels, and num is the number of regions
@@ -52,6 +53,30 @@ end_largest_index = (end_largest_index * 2) - 1;
 % Get the centroid with the largest area
 start_centroid = [start_centroids(start_largest_index), start_centroids(start_largest_index + 1)];
 end_centroid = [end_centroids(end_largest_index), end_centroids(end_largest_index + 1)];
+
+% Calculate the difference in pixels from the center of the image
+start_diff_px = start_centroid(2) - img_center_height;
+end_diff_px = img_center_height - end_centroid(2);
+
+% Convert the distance in pixels to degree, relative to the center angle 
+% (60 deg)
+start_diff_deg = 60 - (start_diff_px * 0.042);
+end_diff_deg = (end_diff_px * 0.042) + 60;
+
+% Convert distance in degrees to meters
+start_diff_m = 7 * tand(start_diff_deg);
+end_diff_m = 7 * tand(end_diff_deg);
+
+% Compare to find distance travelled
+% Assume that time between first and last image is 1 sec - gives speed in
+% m/s
+speed_metres = end_diff_m - start_diff_m;
+
+% Convert to mph
+speed_miles = speed_metres * 2.24;
+
+disp('Speed in mph is: ')
+disp(speed_miles)
 
 % % Calculate the max width of the BoundingBox
 % [start_bound_boxes_pos, start_bound_boxes] = start_stats.BoundingBox; % Returns the positions and the size of the bounding boxes
