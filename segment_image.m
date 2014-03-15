@@ -12,6 +12,8 @@ blue = immultiply(mask, im_input(:,:,3));
 % Assemble the RGB components to restore the image in the ROI (image g)
 im_color_sample = cat(3, red, green, blue);
 
+% !!!!!! SAVE im_color_sample !!!!!!
+
 % Pre-processing for calculating the covariance matrix
 [img_rows, img_columns, color] = size(im_color_sample); % M-rows, N-columns and K-colour components
 
@@ -29,3 +31,4 @@ img_matrix = double(img_matrix(row_indices, 1:3));
 [covariant, mean] = covmatrix(img_matrix);
 
 im_output = colorseg('euclidean', im_input, 90, mean);
+
