@@ -1,8 +1,9 @@
 function oversize_test(image)
 
 % Calculate img dimensions
-[img_width, img_height] = size(image);
-img_center_height = img_height / 2;
+[img_height, img_width] = size(image);
+img_center_x = img_width / 2;
+img_center_y = img_height / 2;
 
 im_label = bwlabel(image, 4);
 
@@ -10,45 +11,55 @@ im_label = bwlabel(image, 4);
 % Returns a set of properties (defined by the arguments passed in)
 stats = regionprops(im_label, 'Centroid', 'ConvexArea', 'BoundingBox');
 
-% Find region with largest area, and it's index
-[max_area, max_index] = max([stats.ConvexArea]);
+% Get bounding boxes from labelled regions
+bound_boxes = [stats.BoundingBox];
 
-% Calculate the centroid of the region
-centroids = [stats.Centroid];
-
-% Convert largest area index to centroid's index
-centroid_index = (max_index * 2) - 1;
-
-% Get the centroid with the largest area
-centroid = [centroids(centroid_index), centroids(centroid_index + 1)];
-
-% Calculate pixel difference of centroid from image center
-if centroid(2) < img_center_height
-    % Above center
-    diff_px = img_center_height - centroid(2);
-else
-    % Below center
-    diff_px = centroid(2) - img_center_height;
+% Loop through each region's bounding box to separate the position of the
+% box and it's height and width
+bound_boxes_pos_x = []; % Creates emtpy arrays for each value
+bound_boxes_pos_y = [];
+bound_boxes_width = [];
+bound_boxes_height = [];
+% The BoundingBox contains values in the following order: upper left
+% position for x, upper left position for y, width, height
+for k = 1:4:length(bound_boxes)
+    bound_boxes_pos_x = [bound_boxes_pos_x, bound_boxes(k)]; % Separate upper left position for x into it's own array
+    bound_boxes_pos_y = [bound_boxes_pos_y, bound_boxes(k + 1)];
+    bound_boxes_width = [bound_boxes_width, bound_boxes(k + 2)];
+    bound_boxes_height = [bound_boxes_height, bound_boxes(k + 3)];
 end
 
-% Using pixel difference, calculate centroid's angle from center
+% Find the largest region (by width), and get it's index within the array
+[bound_box_width, bound_box_index] = max(bound_boxes_width);
+
+% Find the height, x and y positions for the largest region
+bound_box_height = bound_boxes_height(bound_box_index);
+bound_box_pos_x = bound_boxes_pos_x(bound_box_index);
+bound_box_pos_y = bound_boxes_pos_y(bound_box_index);
+
+% Calculate the centre of the bounding box
+centroid_x = bound_box_pos_x + (bound_box_width / 2);
+centroid_y = bound_box_pos_y + (bound_box_height / 2);
+
+% Calculate the difference (in pixels) between the centre of the image and
+% the centre of bounding box
+diff_px = img_center_y - centroid_y;
+
+% Convert the difference in pixels to difference in degrees and add to
+% degrees from vertical (60)
 diff_deg = 60 + (diff_px * 0.042);
 
-% Calculate centroid's distance from camera
+% Calculate the (horizontal) distance between the camera and object
 distance = 7 * tand(diff_deg);
 
-img_width_m = 2 * (distance * sind(13.44));
-pixel_m_ratio = 640 / img_width_m;
+% Calculate the width of the bounding box in degrees
+width_deg = bound_box_width * 0.042;
 
-% Find bounding box around largest region
-bound_box = stats(max_index).BoundingBox;
-bound_width = bound_box(3);
-
-% Convert pixel numbers to meters
-bound_width_m = bound_width / pixel_m_ratio;
+% Calculate the width of the bounding box in meters
+width_m = 2 * (distance * sind(width_deg));
 
 disp('Width in metres: ')
-disp(bound_width_m)
+disp(width_m)
 
 
 
