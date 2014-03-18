@@ -2,35 +2,15 @@ clear;
 
 im_input = imread('oversize.jpg');
 
-% Select a region interest (ROI) interactively
-mask = roipoly(im_input);
-figure, close all
+% Filter image with average filter
+filter_av = fspecial('average', 20); % Create average filter
+im_gau = imfilter(im_input, filter_av, 'replicate'); % Apply average filter
 
-% Retrieve the red, green, blue components of the pixels inside ROI
-red = immultiply(mask, im_input(:,:,1));
-green = immultiply(mask, im_input(:,:,2));
-blue = immultiply(mask, im_input(:,:,3));
+% Convert image to black and white
+im_bw_reversed = im2bw(im_gau, 0.22);
 
-% Assemble the RGB components to restore the image in the ROI (image g)
-im_color_sample = cat(3, red, green, blue);
-
-% Pre-processing for calculating the covariance matrix
-[img_rows, img_columns, color] = size(im_color_sample); % M-rows, N-columns and K-colour components
-
-% Function reshape re-organises the sample image into a M * N-row by 3
-% column array, i.e., each row is the rgb values of a pixel
-img_matrix = reshape(im_color_sample, img_rows * img_columns, 3);
-
-% Find the row indices of non-zero pixels of the mask
-row_indices = find(mask);
-
-% Use the indices to remove the zero components in I
-img_matrix = double(img_matrix(row_indices, 1:3));
-
-% Compute covariance matrix C and the mean m of the samples
-[covariant, mean] = covmatrix(img_matrix);
-
-image = colorseg('euclidean', im_input, 90, mean);
+% Reverse the b/w img, so foreground becomes background
+image = im_bw_reversed < max(im_bw_reversed(:));
 
 % Calculate img dimensions
 [img_height, img_width] = size(image);
