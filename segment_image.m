@@ -5,6 +5,7 @@ filter_av = fspecial('average', 10);
 
 % Test is sample img exists - if not, use LoG filter to segment img. If
 % sample img exists, use img subtraction to filter
+% To segment img without sample, pass in empty string as second argument
 if (strcmp(im_samp, ''))
     % Filter with average filter
     im_gau = imfilter(im_input, filter_av, 'replicate');
