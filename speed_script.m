@@ -3,18 +3,19 @@ clear;
 im_start_input = imread('001.jpg');
 im_end_input = imread('010.jpg');
 
-% Filter image with average filter
-filter_av = fspecial('average', 20); % Create average filter
-im_gau_start = imfilter(im_start_input, filter_av, 'replicate'); % Apply average filter
-im_gau_end = imfilter(im_end_input, filter_av, 'replicate');
+% Subtract sample img from main img
+im_sub_start = imsubtract(im_end_input, im_start_input);
+im_sub_end = imsubtract(im_start_input, im_end_input);
 
-% Convert image to black and white
-im_bw_reversed_start = im2bw(im_gau_start, 0.22);
-im_bw_reversed_end = im2bw(im_gau_end, 0.22);
+% Create average filter
+filter_av = fspecial('average', 10);
+% Filter with average filter - reduces noise
+im_gau_start = imfilter(im_sub_start, filter_av, 'replicate');
+im_gau_end = imfilter(im_sub_end, filter_av, 'replicate');
 
-% Reverse the b/w img, so foreground becomes background
-im_start = im_bw_reversed_start < max(im_bw_reversed_start(:));
-im_end = im_bw_reversed_end < max(im_bw_reversed_end(:));
+% Convert to black & white
+im_start = im2bw(im_gau_start, 0.3);
+im_end = im2bw(im_gau_end, 0.3);
 
 % Calculate img dimensions
 [img_height, img_width] = size(im_start);
