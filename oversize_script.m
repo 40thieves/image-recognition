@@ -3,14 +3,12 @@ clear;
 im_input = imread('oversize.jpg');
 
 % Filter image with average filter
-filter_av = fspecial('average', 20); % Create average filter
+filter_av = fspecial('average', 10); % Create average filter
 im_gau = imfilter(im_input, filter_av, 'replicate'); % Apply average filter
 
-% Convert image to black and white
-im_bw_reversed = im2bw(im_gau, 0.22);
-
-% Reverse the b/w img, so foreground becomes background
-image = im_bw_reversed < max(im_bw_reversed(:));
+% Convert image to black & white
+im_bw_reversed = im2bw(im_gau, 0.25);
+image = im_bw_reversed < max(im_bw_reversed(:)); % Reverse b/w, so foreground becomes background
 
 % Calculate img dimensions
 [img_height, img_width] = size(image);
