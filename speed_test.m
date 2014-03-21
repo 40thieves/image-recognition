@@ -66,13 +66,3 @@ speed_miles = speed_meters * 2.24;
 
 disp('Speed in mph is: ')
 disp(speed_miles)
-
-
-
-
-
-
-
-
-
-

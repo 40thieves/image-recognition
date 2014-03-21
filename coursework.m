@@ -51,8 +51,3 @@ im_oversize_bw = segment_image(im_oversize, '');
 
 % Test for size
 oversize_test(im_oversize_bw);
-
-
-
-
-

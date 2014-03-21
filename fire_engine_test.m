@@ -44,5 +44,3 @@ if (len > 0)
 else
     disp('Does not contain a fire engine')
 end
-
-

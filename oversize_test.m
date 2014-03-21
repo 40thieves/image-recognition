@@ -47,21 +47,3 @@ width_m = 2 * (distance * tand(width_deg));
 
 disp('Width in metres: ')
 disp(width_m)
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-

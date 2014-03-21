@@ -23,5 +23,3 @@ else
     % Convert to black & white
     im_output = im2bw(im_gau, 0.3);
 end
-
-% figure, imshow(im_output)
