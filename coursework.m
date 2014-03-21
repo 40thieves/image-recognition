@@ -3,8 +3,9 @@ clear;
 im_start = imread('001.jpg');
 im_end = imread('005.jpg');
 
-% Test if object is a fire engine, using red colour
-fire_engine_test(im_start)
+% Test if object is a fire engine, using red colour and width-to-height
+% ratio
+fire_engine_test(im_start);
 
 % Segment images using color sample
 im_start_bw = segment_image(im_start, im_end);
