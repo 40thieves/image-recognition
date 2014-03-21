@@ -52,8 +52,9 @@ start_distance = 7 * tand(start_diff_deg);
 end_distance = 7 * tand(end_diff_deg);
 
 % Compare distance travelled by first and last objects
-% Assume that time between frames is 1 sec, therefore giving speed in m/s
-speed_meters = end_distance - start_distance;
+% Assume that time between frames is 0.1 sec, therefore giving speed in m/s
+distance_travelled = end_distance - start_distance;
+speed_meters = distance_travelled * 10;
 
 % Convert m/s to mph
 speed_miles = speed_meters * 2.24;
