@@ -15,12 +15,17 @@ im_end_label = bwlabel(im_end, 4);
 start_stats = regionprops(im_start_label, 'ConvexArea', 'BoundingBox');
 end_stats = regionprops(im_end_label, 'ConvexArea', 'BoundingBox');
 
-[start_max_area, start_max_index] = max([start_stats.ConvexArea]);
+% Determine the largest region (by ConvexArea) and it's index
+[start_max_area, start_max_index] = max([start_stats.ConvexArea]); % start_max_area is not required, only it's index
 [end_max_area, end_max_index] = max([end_stats.ConvexArea]);
 
+% Use largest region's index to retrieve it's BoundingBox
 start_bound_box = start_stats(start_max_index).BoundingBox;
 end_bound_box = end_stats(end_max_index).BoundingBox;
 
+% Retrieve BoundingBox properties
+% The BoundingBox contains values in the following order: upper left
+% position for x, upper left position for y, width, height
 start_bound_box_pos_x = start_bound_box(1);
 start_bound_box_pos_y = start_bound_box(2);
 start_bound_box_width = start_bound_box(3);
