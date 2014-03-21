@@ -69,6 +69,10 @@ The application processes images of traffic travelling through a tunnel and atte
 		* `distance * tand(degrees)` - gives half width
 		* This value multiplied by 2 to get full width
 	* If width is over 2.5, the vehicle is oversized
+* Coursework function
+	* Works in the same way described above
+	* Allows user to enter file path names to 2 images
+	* If speed test is not required an empty string can be passed as the second argument
 
 __Instructions__
 
