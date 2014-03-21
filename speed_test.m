@@ -15,49 +15,20 @@ im_end_label = bwlabel(im_end, 4);
 start_stats = regionprops(im_start_label, 'Centroid', 'ConvexArea', 'BoundingBox'); % Returns a set of properties (defined by the arguments passed in)
 end_stats = regionprops(im_end_label, 'Centroid', 'ConvexArea', 'BoundingBox');
 
-% Get bounding boxes from labelled regions
-start_bound_boxes = [start_stats.BoundingBox];
-end_bound_boxes = [end_stats.BoundingBox];
+[start_max_area, start_max_index] = max([start_stats.ConvexArea]);
+[end_max_area, end_max_index] = max([end_stats.ConvexArea]);
 
-% Loop through each region's bounding box to separate the position of the
-% box and it's height and width
-start_bound_boxes_pos_x = [];
-start_bound_boxes_pos_y = [];
-start_bound_boxes_width = [];
-start_bound_boxes_height = [];
-end_bound_boxes_pos_x = [];
-end_bound_boxes_pos_y = [];
-end_bound_boxes_width = [];
-end_bound_boxes_height = [];
+start_bound_box = start_stats(start_max_index).BoundingBox;
+end_bound_box = end_stats(end_max_index).BoundingBox;
 
-% The BoundingBox contains values in the following order: upper left
-% position for x, upper left position for y, width, height
-for k = 1:4:length(start_bound_boxes)
-    start_bound_boxes_pos_x = [start_bound_boxes_pos_x, start_bound_boxes(k)]; % Separate upper left position for x into it's own array
-    start_bound_boxes_pos_y = [start_bound_boxes_pos_y, start_bound_boxes(k + 1)];
-    start_bound_boxes_width = [start_bound_boxes_width, start_bound_boxes(k + 2)];
-    start_bound_boxes_height = [start_bound_boxes_height, start_bound_boxes(k + 3)];
-end
-
-for l = 1:4:length(end_bound_boxes)
-    end_bound_boxes_pos_x = [end_bound_boxes_pos_x, end_bound_boxes(l)];
-    end_bound_boxes_pos_y = [end_bound_boxes_pos_y, end_bound_boxes(l + 1)];
-    end_bound_boxes_width = [end_bound_boxes_width, end_bound_boxes(l + 2)];
-    end_bound_boxes_height = [end_bound_boxes_height, end_bound_boxes(l + 3)];
-end
-
-% Find the largest region (by width), and get it's index within the array
-[start_bound_box_width, start_bound_box_index] = max(start_bound_boxes_width);
-[end_bound_box_width, end_bound_box_index] = max(end_bound_boxes_width);
-
-% Find the height, x and y positions of the largest region
-start_bound_box_height = start_bound_boxes_height(start_bound_box_index);
-start_bound_box_pos_x = start_bound_boxes_pos_x(start_bound_box_index);
-start_bound_box_pos_y = start_bound_boxes_pos_y(start_bound_box_index);
-
-end_bound_box_height = end_bound_boxes_height(end_bound_box_index);
-end_bound_box_pos_x = end_bound_boxes_pos_x(end_bound_box_index);
-end_bound_box_pos_y = end_bound_boxes_pos_y(end_bound_box_index);
+start_bound_box_pos_x = start_bound_box(1);
+start_bound_box_pos_y = start_bound_box(2);
+start_bound_box_width = start_bound_box(3);
+start_bound_box_height = start_bound_box(4);
+end_bound_box_pos_x = end_bound_box(1);
+end_bound_box_pos_y = end_bound_box(2);
+end_bound_box_width = end_bound_box(3);
+end_bound_box_height = end_bound_box(4);
 
 % Calculate the centre of the bounding box
 start_centroid_x = start_bound_box_pos_x + (start_bound_box_width / 2);
