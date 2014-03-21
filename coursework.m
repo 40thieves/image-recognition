@@ -4,7 +4,7 @@ im_start = imread('001.jpg');
 im_end = imread('010.jpg');
 
 % Test if object is a fire engine, using red colour
-color_detect(im_start)
+fire_engine_test(im_start)
 
 % Segment images using color sample
 im_start_bw = segment_image(im_start, im_end);

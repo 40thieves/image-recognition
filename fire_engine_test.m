@@ -1,4 +1,4 @@
-function color_detect(im_input)
+function fire_engine_test(im_input)
 
 im_sample = imread('sample.jpg');
 
