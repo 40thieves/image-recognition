@@ -1,18 +1,58 @@
 clear;
 
-im_start = imread('001.jpg');
-im_end = imread('005.jpg');
+disp('--- Testing blue car images ---')
 
-% Test if object is a fire engine, using red colour and width-to-height
+im_start_car = imread('001.jpg');
+im_end_car = imread('005.jpg');
+
+% Test if image contains a fire engine, using red color and width-to-height
 % ratio
-fire_engine_test(im_start);
+fire_engine_test(im_start_car);
 
-% Segment images using color sample
-im_start_bw = segment_image(im_start, im_end);
-im_end_bw = segment_image(im_end, im_start);
+% Segment images
+im_start_car_bw = segment_image(im_start_car, im_end_car);
+im_end_car_bw = segment_image(im_end_car, im_start_car);
 
-% Test first and last images for speed
-speed_test(im_start_bw, im_end_bw);
+% Test for speed
+speed_test(im_start_car_bw, im_end_car_bw);
 
-% Test first image for size
-oversize_test(im_start_bw);
+% Test for size
+oversize_test(im_start_car_bw);
+
+disp('--- Testing fire engine images ---')
+
+im_start_fire = imread('fire01.jpg');
+im_end_fire = imread('fire02.jpg');
+
+% Test if image contains a fire engine, using red color and width-to-height
+% ratio
+fire_engine_test(im_start_fire);
+
+% Segment images
+im_start_fire_bw = segment_image(im_start_fire, im_end_fire);
+im_end_fire_bw = segment_image(im_end_fire, im_start_fire);
+
+% Test for speed
+speed_test(im_start_fire_bw, im_end_fire_bw);
+
+% Test for size
+oversize_test(im_start_fire_bw);
+
+disp('--- Testing oversize image ---')
+
+im_oversize = imread('oversize.jpg');
+
+% Test if image contains a fire engine, using red color and width-to-height
+% ratio
+fire_engine_test(im_oversize);
+
+% Segment images
+im_oversize_bw = segment_image(im_oversize, '');
+
+% Test for size
+oversize_test(im_oversize_bw);
+
+
+
+
+
