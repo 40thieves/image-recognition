@@ -19,33 +19,21 @@ im_label = bwlabel(image, 4);
 
 % Get bounding box width
 % Returns a set of properties (defined by the arguments passed in)
-stats = regionprops(im_label, 'Centroid', 'ConvexArea', 'BoundingBox');
+stats = regionprops(im_label, 'ConvexArea', 'BoundingBox');
 
-% Get bounding boxes from labelled regions
-bound_boxes = [stats.BoundingBox];
+% Determine largest region (by ConvexArea) and it's index
+[max_area, max_area_index] = max([stats.ConvexArea]);
 
-% Loop through each region's bounding box to separate the position of the
-% box and it's height and width
-bound_boxes_pos_x = []; % Creates emtpy arrays for each value
-bound_boxes_pos_y = [];
-bound_boxes_width = [];
-bound_boxes_height = [];
+% Use largest region's index to retrieve it's BoundingBox
+bound_box = stats(max_area_index).BoundingBox;
+
+% Retrieve BoundingBox properties
 % The BoundingBox contains values in the following order: upper left
 % position for x, upper left position for y, width, height
-for k = 1:4:length(bound_boxes)
-    bound_boxes_pos_x = [bound_boxes_pos_x, bound_boxes(k)]; % Separate upper left position for x into it's own array
-    bound_boxes_pos_y = [bound_boxes_pos_y, bound_boxes(k + 1)];
-    bound_boxes_width = [bound_boxes_width, bound_boxes(k + 2)];
-    bound_boxes_height = [bound_boxes_height, bound_boxes(k + 3)];
-end
-
-% Find the largest region (by width), and get it's index within the array
-[bound_box_width, bound_box_index] = max(bound_boxes_width);
-
-% Find the height, x and y positions for the largest regions
-bound_box_height = bound_boxes_height(bound_box_index);
-bound_box_pos_x = bound_boxes_pos_x(bound_box_index);
-bound_box_pos_y = bound_boxes_pos_y(bound_box_index);
+bound_box_pos_x = bound_box(1);
+bound_box_pos_y = bound_box(2);
+bound_box_width = bound_box(3);
+bound_box_height = bound_box(4);
 
 % Calculate the centre of the bounding box
 centroid_x = bound_box_pos_x + (bound_box_width / 2);
