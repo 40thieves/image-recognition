@@ -1,7 +1,7 @@
 clear;
 
 im_start = imread('001.jpg');
-im_end = imread('010.jpg');
+im_end = imread('005.jpg');
 
 % Test if object is a fire engine, using red colour
 fire_engine_test(im_start)
