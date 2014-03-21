@@ -46,7 +46,7 @@ im_oversize = imread('oversize.jpg');
 % ratio
 fire_engine_test(im_oversize);
 
-% Segment images
+% Segment image
 im_oversize_bw = segment_image(im_oversize, '');
 
 % Test for size
