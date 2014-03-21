@@ -47,3 +47,9 @@ width_m = 2 * (distance * tand(width_deg));
 
 disp('Width in metres: ')
 disp(width_m)
+
+if (width_m > 2.5)
+    disp('Contains an oversized vehicle')
+else
+    disp('Does not contain an oversized vehicle')
+end
