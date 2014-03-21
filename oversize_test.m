@@ -7,9 +7,8 @@ img_center_y = img_height / 2;
 
 im_label = bwlabel(image, 4);
 
-
 % Calculate ConvexArea and BoundingBox properties of the regions
-stats = regionprops(im_label, 'Centroid', 'ConvexArea', 'BoundingBox');
+stats = regionprops(im_label, 'ConvexArea', 'BoundingBox');
 
 % Determine the largest region (by ConvexArea) and it's index
 [max_area, max_area_index] = max([stats.ConvexArea]); % max_area is not required, only it's index
