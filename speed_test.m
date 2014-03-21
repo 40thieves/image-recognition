@@ -11,9 +11,9 @@ img_center_y = img_height / 2;
 im_start_label = bwlabel(im_start, 4);
 im_end_label = bwlabel(im_end, 4);
 
-% Calculate ConvexArea and Area properties of the regions
-start_stats = regionprops(im_start_label, 'Centroid', 'ConvexArea', 'BoundingBox'); % Returns a set of properties (defined by the arguments passed in)
-end_stats = regionprops(im_end_label, 'Centroid', 'ConvexArea', 'BoundingBox');
+% Calculate ConvexArea and BoundingBox properties of the regions
+start_stats = regionprops(im_start_label, 'ConvexArea', 'BoundingBox');
+end_stats = regionprops(im_end_label, 'ConvexArea', 'BoundingBox');
 
 [start_max_area, start_max_index] = max([start_stats.ConvexArea]);
 [end_max_area, end_max_index] = max([end_stats.ConvexArea]);
