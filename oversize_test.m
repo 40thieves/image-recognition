@@ -56,7 +56,7 @@ distance = 7 * tand(diff_deg);
 width_deg = bound_box_width * 0.042;
 
 % Calculate the width of the bounding box in meters
-width_m = 2 * (distance * sind(width_deg));
+width_m = 2 * (distance * tand(width_deg));
 
 disp('Width in metres: ')
 disp(width_m)
