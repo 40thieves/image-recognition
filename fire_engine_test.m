@@ -37,12 +37,12 @@ if (len > 0)
 
     % If ratio is higher than 1.7, img contains a fire engine
     if (ratio >= 1.7)
-       disp('Fire engine')
+       disp('Contains a fire engine')
     else
-        disp('Not a fire engine')
+        disp('Does not contain a fire engine')
     end
 else
-    disp('Not a fire engine')
+    disp('Does not contain a fire engine')
 end
 
 
