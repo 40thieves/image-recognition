@@ -9,7 +9,7 @@ im_end_car = imread('005.jpg');
 % ratio
 fire_engine_test(im_start_car);
 
-% Segment images
+% Segment images, using img subtraction
 im_start_car_bw = segment_image(im_start_car, im_end_car);
 im_end_car_bw = segment_image(im_end_car, im_start_car);
 
@@ -28,7 +28,7 @@ im_end_fire = imread('fire02.jpg');
 % ratio
 fire_engine_test(im_start_fire);
 
-% Segment images
+% Segment images, using img subtraction
 im_start_fire_bw = segment_image(im_start_fire, im_end_fire);
 im_end_fire_bw = segment_image(im_end_fire, im_start_fire);
 
@@ -46,7 +46,7 @@ im_oversize = imread('oversize.jpg');
 % ratio
 fire_engine_test(im_oversize);
 
-% Segment image
+% Segment image, without using img subtraction
 im_oversize_bw = segment_image(im_oversize, '');
 
 % Test for size
