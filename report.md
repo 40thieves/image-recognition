@@ -4,52 +4,37 @@ The application processes images of traffic travelling through a tunnel and atte
 
 ### System Design
 
-#### Fire engine test
+The first test attempted by the system is the test for a fire engine. A sample image is used, originally sampled from an image of a fire engine. The test image is segmented into a binary image, based on regions that match the mean colour of the sample. The parameters (a threshold of 100) for this segmentation were experimented with until the best results were found. The first test is performed here - if no regions are found to match the sample, then the image does not contain a fire engine.
 
-The first test attempted by the system is the test for a fire engine. This test will process a colour image to detect a vehicle that is coloured red and has a width-to-height ratio of approximately 1:1.7. A sample image is read into memory, originally sampled from an image of a fire engine, so that the colours can be tested to see if they match.
+However, not all red vehicles are fire engines, and so a further test is required. The `ConvexArea` property is used to find the largest region, which is assumed to be the detected vehicle. Using the `BoundingBox` property, the width and height of the region can be calculated, and thus, the width-to-height ratio. If this ratio is greater than 1:1.7, then the image contains a fire engine.
 
-The application will transform the sample image data into a M-by-N-by-3 array, where M is the height of the test image and N is the width. Within this array, each row represents the RGB values of each individual pixel. The mean value of this array is then calculated.
+To perform the speed test, both images will need to be segmented to isolate the vehicle. Firstly, the function creates a "averaging" filter that will average pixel values within it's 10-by-10 mask. This will help to reduce noise in the image. Other filters were tested, however this was found to produce the best results.
 
-The test image is then segmented into a binary image, based on regions that match the mean colour of the sample. The parameters (a threshold of 100) for this segmentation were experimented with until the best results were found. The first test is performed here - if no regions are found to match the sample, then the image does not contain a fire engine.
+A secondary frame can be used as a sample image, which if provided, will perform image subtraction on the main image. Areas from the sample image will be removed from the main image. This was found to be very effective at removing noise, especially in the top left of the images. If a sample image is not provided, the image is filtered using the average filter followed by conversion to binary using a threshold of 0.25. Various values were tried before this was found to produce the best results.
 
-However, not all red vehicles are fire engines, and so a further test is required for the width-to-height ratio. The `regionprops` function is used to find `ConvexArea` and `BoundingBox` properties for each region. The `ConvexArea` property is used to find the largest region, which is assumed to be the detected vehicle. The `BoundingBox` property is also found for this region, which effectively draws a box around the entire region. From this, the width and height of the region can be calculated, and thus, the width-to-height ratio. If this ratio is greater than 1:1.7, then the image contains a fire engine.
-
-#### Image segmentation
-
-To perform the speed test, both images will need to be segmented to isolate the vehicle. Firstly, the function creates a "averaging" filter that will average pixel values within it's 10-by-10 mask. This will help to reduce noise in the image by filling small holes and expanding large areas. Other filters were tested, however this was found to produce the best results.
-
-The function allows for a sample image to be passed in. If provided the function will perform image subtraction on the two images, where areas from the sample image will be removed from the main image. This was found to be very effective at removing noise, especially in the top left of the images. The resulting image is further filtered using the average filter discussed above, before conversion to a binary image using a threshold of 0.3.
-
-If a sample image is not provided, the image is filtered using the average filter followed by conversion to binary using a threshold of 0.25. Various values were tried before this was found to produce the best results. The resulting binary image, however, is reversed, with the background as foreground and vice versa. This is reversed back, giving the desired binary image.
-
-#### Speed test
-
-Once these binary images have been produced, the speed test is applied. All of the following actions have to be applied to both images. The largest region is found using the `ConvexArea` property, and this region's `BoundingBox` is found. The centroid of the bounding box is calculated, which is preferred over the `Centroid` property of the region. This is because the `Centroid` property is calculated from the "centre of mass" of the region, which may not reflect the actual centre of the vehicle. The distance (in pixels) along the y-axis between the centre of the image and the region's centroid is then found. This is converted to the number of degrees the vehicle is off-centre, as shown below.
+Once these binary images have been produced, the speed test is applied. All of the following actions are applied to both images. The largest region is found using the `ConvexArea` property, and the region's `BoundingBox` is found. The centroid of the bounding box is calculated, which is preferred over the `Centroid` property of the region. This is because the latter is calculated from the "centre of mass" of the region, which may not reflect the actual centre of the vehicle. The distance along the y-axis between the centre of the image and the region's centroid is then found. This is converted to the number of degrees the vehicle is off-centre, shown below.
 
 ![Diagram showing geometrical layout of the camera and vehicles](img/distance.png)
 
-This can be simplified to give two triangles, where the angle and the length of one side is known.
-
 ![Diagram showing the simplified geometrical layout for the camera and vehicle in the first frame](img/trig-before.png)
 
-This can be solved using trigonometry using the following formula.
+This can be solved using the following formula.
 
 ![Equation for finding the vehicle's (horizontal) distance from the camera](img/equation-distance.png)
 
-Once the distance has been calculated for both images, the distance between the vehicles can be found. It is assumed that the time elapsed between the two frames is 0.1 seconds. Using this, the speed in meters per second can be calculated. This is then converted to miles per hour.
+The distance between the vehicles can now be found. It is assumed that the time elapsed between the two frames is 0.1 seconds. Using this, the speed in meters per second can be calculated.
 
-#### Oversize test
+The final test performed is the oversized test. This test shares much of the speed test's approach, first calculating the vehicle's distance from the camera. Using Pythagoras' theorem, the horizontal distance between the camera and the vehicle is converted to the true distance between camera and vehicle.
 
-The final test performed is the oversized vehicle test. This test shares much of the speed test's approach, by calculating the vehicle's distance from the camera in order to scale the width. However it differs in that only one image is required for the process. Regions within the image are found and the largest region's `BoundingBox` is found. The centroid of this box is used to calculate the vehicle's distance from the camera. The `BoundingBox`'s width in pixels is converted to degrees. Using this angle and the distance to the vehicle, the width in meters can be calculated. This is shown in the diagram below:
+![Diagram showing the different distances calculated between the vehicle and camera](img/pythag.png)
 
+![Equation for finding the distance between the camera and the vehicle](img/equation-pythag.png)
 
-* __WIDTH DIAGRAM__
+The `BoundingBox`'s width in pixels is converted to degrees. Using this angle and the distance to the vehicle, the width in meters can be calculated. This is shown in the diagram below.
 
-If the vehicle's width is over 2.5m, the vehicle is oversized, which is output to the Command Window.
+![Diagram showing how the vehicle's width in pixels is converted to width in meters](img/width.png)
 
-#### Coursework function
-
-A function is provided that will perform all of these tests when given file paths to 2 images. This will call the functions described above. If a speed test is not required, or no second image is available, an empty string can be passed as the second argument.
+![Equation for finding the vehicle's width](img/equation-width.png)
 
 ### Testing
 
@@ -64,3 +49,5 @@ The application achieves it's aims by effectively detecting vehicles and calcula
 Another success of the application is the colour segmentation of fire engines. This allows very accurate segmentation of a specific vehicle, something that is required by the specification.
 
 However, the application was not tested with images of different cars, with various colours and shapes. This means that it may be unsuitable for application in a non-academic scenario. For this to be achieved, the application would have to be further tested and adjusted to the distinct requirements of a real-world situation.
+
+Image segmentation based on a subtraction approach is also problematic in some circumstances. For example if the vehicle has not moved far enough between the two frames, then the resulting image can be "cut off" where the images intersect. This can affect the calculation of the vehicle's centroid, and thus it's distance from the camera.
