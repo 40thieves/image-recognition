@@ -37,13 +37,16 @@ diff_px = img_center_y - centroid_y;
 diff_deg = 60 + (diff_px * 0.042);
 
 % Calculate the (horizontal) distance between the camera and object
-distance = 7 * tand(diff_deg);
+horizontal_distance = 7 * tand(diff_deg);
+
+% Calculate the distance from camera to object (i.e. the hypotenuse)
+distance = hypot(7, horizontal_distance);
 
 % Calculate the width of the bounding box in degrees
 width_deg = bound_box_width * 0.042;
 
 % Calculate the width of the bounding box in meters
-width_m = 2 * (distance * tand(width_deg));
+width_m = 2 * (horizontal_distance * tand(width_deg));
 
 disp('Width in metres: ')
 disp(width_m)
