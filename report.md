@@ -26,13 +26,13 @@ The distance between the vehicles can now be found. It is assumed that the time 
 
 The final test performed is the oversized test. This test shares much of the speed test's approach, first calculating the vehicle's distance from the camera. Using Pythagoras' theorem, the horizontal distance between the camera and the vehicle is converted to the true distance between camera and vehicle.
 
-![Diagram showing the different distances calculated between the vehicle and camera](img/pythag.png)
+![Diagram showing how the true distance between the camera and vehicle is calculated](img/pythag.png)
 
-![Equation for finding the distance between the camera and the vehicle](img/equation-pythag.png)
+![Equation for finding the true distance between the camera and the vehicle](img/equation-pythag.png)
 
 The `BoundingBox`'s width in pixels is converted to degrees. Using this angle and the distance to the vehicle, the width in meters can be calculated. This is shown in the diagram below.
 
-![Diagram showing how the vehicle's width in pixels is converted to width in meters](img/width.png)
+![Diagram showing how the vehicle's width in pixels is converted to width (x) in meters](img/width.png)
 
 ![Equation for finding the vehicle's width](img/equation-width.png)
 
