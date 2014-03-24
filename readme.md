@@ -10,6 +10,7 @@ Matlab program for processing images of cars and calculating their speed and siz
 
 * Open the folder in Matlab
 * Run the `coursework.m` file
+	* This will perform tests on the blue car images (`001.jpg` and `005.jpg`), then the fire engine images (`fire01.jpg` and `fire02/jpg`) and finally the oversize vehicle image (`oversize.jpg`).
 * Results are printed to the Command Window
 
 #### Using the function
